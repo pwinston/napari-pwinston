@@ -15,7 +15,7 @@ import numpy as np
 DATASETS = {}
 
 ENV = {
-    "NAPARI_PERFMON": "0",
+    "NAPARI_PERFMON": "1",
 }
 
 
@@ -92,6 +92,7 @@ def run_napari():
         # It's a callable function
         with napari.gui_qt():
             viewer = data_set()
+            print(viewer._title)
 
 
 if __name__ == "__main__":
