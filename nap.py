@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 """
-Small launcher script for napari for development/testing/debug:
+Launch napari with various datasets for development/testing/debug.
 
-1) So we can give short names to datases like "big" or "remote".
-2) So we can configure any env variables we want.
-3) Eventually can grow to do more.
+USAGE: nap.py <dataset>
+
+Example: nap.py small
 """
 import os
 import sys
