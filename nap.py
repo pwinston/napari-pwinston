@@ -19,7 +19,7 @@ from text_image import create_text_image
 
 DATASETS = {}
 
-ENV = {"NAPARI_PERFMON": "1"}
+ENV = {"NAPARI_PERFMON": "1", "NAPARI_ASYNC_LOAD": "1"}
 
 
 def _dump_env():
@@ -29,7 +29,7 @@ def _dump_env():
 
 
 def run_napari(usage=False):
-    def delayed_stack():
+    def numbered_delayed():
         @dask.delayed
         def image(x):
             time.sleep(1)
@@ -88,7 +88,7 @@ def run_napari(usage=False):
         )
 
     DATASETS = {
-        "delayed_stack": delayed_stack,
+        "numbered_delayed": numbered_delayed,
         "numbered": numbered,
         "noise": noise,
         "big8": big8,
