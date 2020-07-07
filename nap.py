@@ -14,7 +14,7 @@ import dask
 import dask.array as da
 import numpy as np
 
-from text_image import create_text_image
+from text_image import create_text_array
 
 
 DATASETS = {}
@@ -28,12 +28,21 @@ def _dump_env():
             print(key, value)
 
 
+def add_delay(array, seconds):
+    @dask.delayed
+    def delayed(array):
+        time.sleep(seconds)
+        return array
+
+    return da.from_delayed(delayed(array), array.shape, array.dtype)
+
+
 def run_napari(usage=False):
     def numbered_delayed():
         @dask.delayed
         def image(x):
             time.sleep(1)
-            return np.array(create_text_image(x))
+            return create_text_array(x)
 
         images = [
             da.from_delayed(image(x), (1024, 1024), dtype=float)
@@ -42,10 +51,49 @@ def run_napari(usage=False):
         data = np.stack(images, axis=0)
         return napari.view_image(data, name='delayed (1 second)')
 
+    def create_images(nx, ny, count, seconds):
+        @dask.delayed
+        def image(x):
+            time.sleep(1)
+            return create_text_array(x)
+
+        return [
+            da.from_delayed(image(x), (1024, 1024), dtype=float)
+            for x in range(20)
+        ]
+        return [
+            add_delay(create_text_array(x, nx, ny), seconds)
+            for x in range(count)
+        ]
+
+    def numbered_4():
+        count = 20
+        seconds = 1
+        images = [
+            np.stack(create_images(0.25, 0.25, count, seconds), axis=0),
+            np.stack(create_images(0.75, 0.25, count, seconds), axis=0),
+            np.stack(create_images(0.25, 0.75, count, seconds), axis=0),
+            np.stack(create_images(0.75, 0.75, count, seconds), axis=0),
+        ]
+        # images = create_images(0.50, 0.5, 20, seconds)
+        data = np.stack(images, axis=0)
+        return napari.view_image(data, name='numbered slices', channel_axis=0)
+
+    def numbered2():
+        data = add_delay(np.array(create_text_array("one")), 1)
+        return napari.view_image(data, name='numbered slices', channel_axis=0)
+
     def numbered():
-        images = [np.array(create_text_image(x)) for x in range(20)]
+        images = [create_text_array(x) for x in range(20)]
         data = np.stack(images, axis=0)
         return napari.view_image(data, name='numbered slices')
+
+    def invisible():
+        return napari.view_image(
+            np.random.random((5, 1024, 1024)),
+            name='five 1k images',
+            visible=False,
+        )
 
     def noise():
         return napari.view_image(
@@ -90,6 +138,9 @@ def run_napari(usage=False):
     DATASETS = {
         "numbered_delayed": numbered_delayed,
         "numbered": numbered,
+        "numbered_4": numbered_4,
+        "numbered2": numbered2,
+        "invisible": invisible,
         "noise": noise,
         "big8": big8,
         "big16": big16,

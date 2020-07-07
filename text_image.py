@@ -1,27 +1,28 @@
 """create_text_image: create a PIL image with centered text.
 """
+import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
 
-def draw_centered_text(image, text):
+def draw_text(image, text, nx=0.5, ny=0.5):
 
     font = ImageFont.truetype('Arial Black.ttf', size=244)
     (width, height) = font.getsize(text)
-    x = (image.width / 2) - width / 2
-    y = (image.height / 2) - height / 2
+    x = (nx * image.width) - width / 2
+    y = (ny * image.height) - height / 2
 
-    color = 'rgb(255, 255, 255)'  # white color
+    color = 'rgb(255, 255, 255)'  # white
 
     draw = ImageDraw.Draw(image)
     draw.text((x, y), text, fill=color, font=font)
 
 
-def create_text_image(text):
+def create_text_array(text, nx=0.5, ny=0.5):
     text = str(text)
     SIZE = (1024, 1024)
     image = Image.new('I', SIZE)
-    draw_centered_text(image, text)
-    return image
+    draw_text(image, text, nx, ny)
+    return np.array(image)
 
 
 def test():
