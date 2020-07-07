@@ -52,15 +52,6 @@ def run_napari(usage=False):
         return napari.view_image(data, name='delayed (1 second)')
 
     def create_images(nx, ny, count, seconds):
-        @dask.delayed
-        def image(x):
-            time.sleep(1)
-            return create_text_array(x)
-
-        return [
-            da.from_delayed(image(x), (1024, 1024), dtype=float)
-            for x in range(20)
-        ]
         return [
             add_delay(create_text_array(x, nx, ny), seconds)
             for x in range(count)

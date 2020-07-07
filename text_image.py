@@ -8,8 +8,8 @@ def draw_text(image, text, nx=0.5, ny=0.5):
 
     font = ImageFont.truetype('Arial Black.ttf', size=244)
     (width, height) = font.getsize(text)
-    x = (nx * image.width) - width / 2
-    y = (ny * image.height) - height / 2
+    x = nx * image.width
+    y = ny * image.height
 
     color = 'rgb(255, 255, 255)'  # white
 
