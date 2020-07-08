@@ -60,15 +60,21 @@ def run_napari(usage=False):
     def numbered_4():
         count = 20
         seconds = 1
-        images = [
-            np.stack(create_images(0.25, 0.25, count, seconds), axis=0),
-            np.stack(create_images(0.75, 0.25, count, seconds), axis=0),
-            np.stack(create_images(0.25, 0.75, count, seconds), axis=0),
-            np.stack(create_images(0.75, 0.75, count, seconds), axis=0),
-        ]
-        # images = create_images(0.50, 0.5, 20, seconds)
+        cols = 4
+        rows = 4
+        images = []
+        for i in range(rows):
+            for j in range(cols):
+                dx = 1 / (rows + 1)
+                dy = 1 / (cols + 1)
+                x = dx + dx * i
+                y = dy + dy * j
+                images.append(
+                    np.stack(create_images(x, y, count, seconds), axis=0)
+                )
         data = np.stack(images, axis=0)
-        return napari.view_image(data, name='numbered slices', channel_axis=0)
+        names = [f"layer {n}" for n in range(count)]
+        return napari.view_image(data, name=names, channel_axis=0)
 
     def numbered2():
         data = add_delay(np.array(create_text_array("one")), 1)
