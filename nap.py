@@ -59,7 +59,7 @@ def run_napari(usage=False):
 
     def numbered_4():
         count = 20
-        seconds = 1
+        seconds = 0.50
         cols = 4
         rows = 4
         images = []
