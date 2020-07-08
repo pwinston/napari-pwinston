@@ -7,9 +7,9 @@ from PIL import Image, ImageDraw, ImageFont
 def draw_text(image, text, nx=0.5, ny=0.5):
 
     font = ImageFont.truetype('Arial Black.ttf', size=244)
-    (width, height) = font.getsize(text)
-    x = nx * image.width
-    y = ny * image.height
+    (text_width, text_height) = font.getsize(text)
+    x = nx * image.width - text_width / 2
+    y = ny * image.height - text_height / 2
 
     color = 'rgb(255, 255, 255)'  # white
 
