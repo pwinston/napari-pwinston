@@ -19,7 +19,12 @@ from text_image import create_text_array
 
 DATASETS = {}
 
-ENV = {"NAPARI_PERFMON": "1", "NAPARI_ASYNC_LOAD": "1"}
+ENV = {
+    "NAPARI_CHUNK_LOG": "/Users/pbw/dev/napari/chunk.log",
+    "NAPARI_PERFMON": "/Users/pbw/.napari-perfmon-config",
+    "NAPARI_CHUNK_ASYNC": "1",
+    "NAPARI_TRACE_FILE": "/Users/pbw/Desktop/perf/latest.json",
+}
 
 
 def _dump_env():
@@ -45,7 +50,7 @@ def run_napari(usage=False):
             return create_text_array(x)
 
         images = [
-            da.from_delayed(image(x), (1024, 1024), dtype=float)
+            da.from_delayed(image(x), (1024, 1024, 3), dtype=float)
             for x in range(20)
         ]
         data = np.stack(images, axis=0)
