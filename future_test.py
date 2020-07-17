@@ -57,14 +57,14 @@ class ChunkLoader:
             print(f"Result: {future.result()}")
 
 
-CHUNK_LOADER = ChunkLoader()
+chunk_loader = ChunkLoader()
 
 start = time.time()
-CHUNK_LOADER.load_chunk(ChunkRequest(1))
-CHUNK_LOADER.load_chunk(ChunkRequest(2))
-CHUNK_LOADER.load_chunk(ChunkRequest(3))
-CHUNK_LOADER.load_chunk(ChunkRequest(4))
-CHUNK_LOADER.load_chunk(ChunkRequest(5))
-CHUNK_LOADER.wait()
+chunk_loader.load_chunk(ChunkRequest(1))
+chunk_loader.load_chunk(ChunkRequest(2))
+chunk_loader.load_chunk(ChunkRequest(3))
+chunk_loader.load_chunk(ChunkRequest(4))
+chunk_loader.load_chunk(ChunkRequest(5))
+chunk_loader.wait()
 elapsed = time.time() - start
 print(f"Duration {elapsed}")
