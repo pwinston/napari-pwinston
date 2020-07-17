@@ -20,9 +20,8 @@ from text_image import create_text_array
 DATASETS = {}
 
 ENV = {
-    "NAPARI_CHUNK_LOG": "/Users/pbw/dev/napari/chunk.log",
     "NAPARI_PERFMON": "/Users/pbw/.napari-perfmon-config",
-    "NAPARI_CHUNK_ASYNC": "1",
+    "NAPARI_ASYNC": "/Users/pbw/.napari-async-config",
     "NAPARI_TRACE_FILE": "/Users/pbw/Desktop/perf/latest.json",
 }
 
@@ -85,7 +84,7 @@ def run_napari(usage=False):
         data = add_delay(np.array(create_text_array("one")), 1)
         return napari.view_image(data, name='numbered slices', channel_axis=0)
 
-    def numbered():
+    def num():
         images = [create_text_array(x) for x in range(20)]
         data = np.stack(images, axis=0)
         return napari.view_image(data, name='numbered slices')
@@ -139,7 +138,7 @@ def run_napari(usage=False):
 
     DATASETS = {
         "numbered_delayed": numbered_delayed,
-        "numbered": numbered,
+        "num": num,
         "numbered_4": numbered_4,
         "numbered2": numbered2,
         "invisible": invisible,

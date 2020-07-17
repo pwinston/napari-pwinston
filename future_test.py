@@ -1,5 +1,6 @@
 from concurrent import futures
 import time
+from typing import List
 
 
 class ChunkRequest:
@@ -29,7 +30,7 @@ class ChunkLoader:
         self.executor = futures.ThreadPoolExecutor(
             max_workers=self.NUM_WORKER_THREADS
         )
-        self.futures: FutureList = []
+        self.futures: List[futures] = []
 
     def load_chunk(self, request: ChunkRequest) -> futures.Future:
         future = self.executor.submit(_chunk_loader_worker, request)
