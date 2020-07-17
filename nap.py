@@ -41,15 +41,16 @@ def add_delay(array, seconds):
     return da.from_delayed(delayed(array), array.shape, array.dtype)
 
 
+@dask.delayed
+def delayed_image_42(x):
+    time.sleep(1)
+    return create_text_array(x)
+
+
 def run_napari(usage=False):
     def numbered_delayed():
-        @dask.delayed
-        def image(x):
-            time.sleep(1)
-            return create_text_array(x)
-
         images = [
-            da.from_delayed(image(x), (1024, 1024, 3), dtype=float)
+            da.from_delayed(delayed_image_42(x), (1024, 1024, 3), dtype=float)
             for x in range(20)
         ]
         data = np.stack(images, axis=0)
@@ -61,7 +62,7 @@ def run_napari(usage=False):
             for x in range(count)
         ]
 
-    def numbered_4():
+    def numbered_16():
         count = 20
         seconds = 0.50
         cols = 4
@@ -139,7 +140,7 @@ def run_napari(usage=False):
     DATASETS = {
         "numbered_delayed": numbered_delayed,
         "num": num,
-        "numbered_4": numbered_4,
+        "numbered_16": numbered_16,
         "numbered2": numbered2,
         "invisible": invisible,
         "noise": noise,
