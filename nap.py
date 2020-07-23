@@ -48,7 +48,7 @@ def delayed_image_42(x):
 
 
 def run_napari(usage=False):
-    def numbered_delayed():
+    def num_delayed():
         images = [
             da.from_delayed(delayed_image_42(x), (1024, 1024, 3), dtype=float)
             for x in range(20)
@@ -62,7 +62,7 @@ def run_napari(usage=False):
             for x in range(count)
         ]
 
-    def numbered_16():
+    def num_16():
         count = 20
         seconds = 0.50
         cols = 4
@@ -81,7 +81,7 @@ def run_napari(usage=False):
         names = [f"layer {n}" for n in range(count)]
         return napari.view_image(data, name=names, channel_axis=0)
 
-    def numbered2():
+    def num_2():
         data = add_delay(np.array(create_text_array("one")), 1)
         return napari.view_image(data, name='numbered slices', channel_axis=0)
 
@@ -138,10 +138,10 @@ def run_napari(usage=False):
         )
 
     DATASETS = {
-        "numbered_delayed": numbered_delayed,
+        "num_delayed": num_delayed,
         "num": num,
-        "numbered_16": numbered_16,
-        "numbered2": numbered2,
+        "num_16": num_16,
+        "num_2": num_2,
         "invisible": invisible,
         "noise": noise,
         "big8": big8,
