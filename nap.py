@@ -22,7 +22,6 @@ DATASETS = {}
 ENV = {
     "NAPARI_PERFMON": "/Users/pbw/.napari-perfmon-config",
     "NAPARI_ASYNC": "/Users/pbw/.napari-async-config",
-    "NAPARI_TRACE_FILE": "/Users/pbw/Desktop/perf/latest.json",
 }
 
 
@@ -42,15 +41,22 @@ def add_delay(array, seconds):
 
 
 @dask.delayed
-def delayed_image_42(x):
+def delayed_image_1(x):
+    global counter
+    print(f"Slice {x} sleeping")
     time.sleep(1)
     return create_text_array(x)
 
 
 def run_napari(usage=False):
+    def num():
+        images = [create_text_array(x) for x in range(20)]
+        data = np.stack(images, axis=0)
+        return napari.view_image(data, rgb=True, name='numbered slices')
+
     def num_delayed():
         images = [
-            da.from_delayed(delayed_image_42(x), (1024, 1024, 3), dtype=float)
+            da.from_delayed(delayed_image_1(x), (1024, 1024, 3), dtype=float)
             for x in range(20)
         ]
         data = np.stack(images, axis=0)
@@ -85,10 +91,11 @@ def run_napari(usage=False):
         data = add_delay(np.array(create_text_array("one")), 1)
         return napari.view_image(data, name='numbered slices', channel_axis=0)
 
-    def num():
-        images = [create_text_array(x) for x in range(20)]
-        data = np.stack(images, axis=0)
-        return napari.view_image(data, name='numbered slices')
+    def async_3d():
+        data = da.random.random(
+            (200, 512, 512, 512), chunks=(1, 512, 512, 512)
+        )
+        return napari.view_image(data, name='async_3d', channel_axis=0)
 
     def invisible():
         return napari.view_image(
@@ -137,11 +144,15 @@ def run_napari(usage=False):
             name='big labels timeseries',
         )
 
+    REMOTE_SMALL_URL = (
+        "https://s3.embassy.ebi.ac.uk/idr/zarr/v0.1/6001240.zarr"
+    )
     DATASETS = {
         "num_delayed": num_delayed,
         "num": num,
         "num_16": num_16,
         "num_2": num_2,
+        "async_3d": async_3d,
         "invisible": invisible,
         "noise": noise,
         "big8": big8,
@@ -151,6 +162,7 @@ def run_napari(usage=False):
         "small3d": small3d,
         "labels": labels,
         "remote": "https://s3.embassy.ebi.ac.uk/idr/zarr/v0.1/4495402.zarr",
+        "remote-small": REMOTE_SMALL_URL,
         "big": "/data-ext/4495402.zarr",
         "small": "/data-local/6001240.zarr",
     }
