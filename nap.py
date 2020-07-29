@@ -20,8 +20,8 @@ from text_image import create_text_array
 DATASETS = {}
 
 ENV = {
-    "NAPARI_PERFMON": "/Users/pbw/.napari-perfmon-config",
-    "NAPARI_ASYNC": "/Users/pbw/.napari-async-config",
+    "NAPARI_PERFMON": "/Users/pbw/.perfmon",
+    "NAPARI_ASYNC": "~/.async",
 }
 
 
@@ -97,6 +97,10 @@ def run_napari(usage=False):
         )
         return napari.view_image(data, name='async_3d', channel_axis=0)
 
+    def async_3d_small():
+        data = da.random.random((5, 512, 512, 512), chunks=(1, 512, 512, 512))
+        return napari.view_image(data, name='async_3d_small', channel_axis=0)
+
     def invisible():
         return napari.view_image(
             np.random.random((5, 1024, 1024)),
@@ -153,6 +157,7 @@ def run_napari(usage=False):
         "num_16": num_16,
         "num_2": num_2,
         "async_3d": async_3d,
+        "async_3d_small": async_3d_small,
         "invisible": invisible,
         "noise": noise,
         "big8": big8,
