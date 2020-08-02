@@ -21,7 +21,7 @@ DATASETS = {}
 
 ENV = {
     "NAPARI_PERFMON": "/Users/pbw/.perfmon",
-    "NAPARI_ASYNC": "~/.async",
+    # "NAPARI_ASYNC": "~/.async",
 }
 
 
