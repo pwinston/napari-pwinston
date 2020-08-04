@@ -41,11 +41,21 @@ def add_delay(array, seconds):
 
 
 @dask.delayed
-def delayed_image_1(x):
+def delayed_image(x, seconds):
     global counter
     print(f"Slice {x} sleeping")
-    time.sleep(1)
+    time.sleep(seconds)
     return create_text_array(x)
+
+
+def create_stack(num_slices, seconds):
+    images = [
+        da.from_delayed(
+            delayed_image(x, seconds), (1024, 1024, 3), dtype=float
+        )
+        for x in range(num_slices)
+    ]
+    return np.stack(images, axis=0)
 
 
 def run_napari(usage=False):
@@ -55,11 +65,11 @@ def run_napari(usage=False):
         return napari.view_image(data, rgb=True, name='numbered slices')
 
     def num_delayed():
-        images = [
-            da.from_delayed(delayed_image_1(x), (1024, 1024, 3), dtype=float)
-            for x in range(20)
-        ]
-        data = np.stack(images, axis=0)
+        data = create_stack(20, 1)
+        return napari.view_image(data, name='delayed (1 second)')
+
+    def num_delayed0():
+        data = create_stack(20, 0)
         return napari.view_image(data, name='delayed (1 second)')
 
     def create_images(nx, ny, count, seconds):
@@ -152,10 +162,11 @@ def run_napari(usage=False):
         "https://s3.embassy.ebi.ac.uk/idr/zarr/v0.1/6001240.zarr"
     )
     DATASETS = {
-        "num_delayed": num_delayed,
         "num": num,
         "num_16": num_16,
         "num_2": num_2,
+        "num_delayed": num_delayed,
+        "num_delayed0": num_delayed0,
         "async_3d": async_3d,
         "async_3d_small": async_3d_small,
         "invisible": invisible,

@@ -2,7 +2,7 @@ import numpy as np
 import h5py
 import dask.array as da
 
-filename = '/System/Volumes/Data/data/sample_A_20160501.hdf'
+filename = '/Users/pbw/data/sample_A/sample_A_20160501.hdf'
 source_data = h5py.File(filename, 'r')
 raw = np.asarray(source_data['volumes/raw'])
 labels = np.asarray(source_data['volumes/labels/neuron_ids'])
