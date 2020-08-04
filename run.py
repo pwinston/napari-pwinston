@@ -20,7 +20,7 @@ from text_image import create_text_array
 DATASETS = {}
 
 ENV = {
-    "NAPARI_PERFMON": "/Users/pbw/.perfmon",
+    # "NAPARI_PERFMON": "/Users/pbw/.perfmon",
     # "NAPARI_ASYNC": "~/.async",
 }
 
@@ -69,8 +69,8 @@ def run_napari(usage=False):
         ]
 
     def num_16():
-        count = 20
-        seconds = 0.50
+        count = 25
+        seconds = 0.25
         cols = 4
         rows = 4
         images = []
@@ -191,7 +191,7 @@ def run_napari(usage=False):
         # Import late so it sees our env vars.
         import napari
 
-        print(f"CREATING: {name}")
+        print(f"Starting napari with: {name}")
 
         # It's a callable function
         with napari.gui_qt():
