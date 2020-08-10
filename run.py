@@ -20,7 +20,7 @@ from text_image import create_text_array
 DATASETS = {}
 
 ENV = {
-    # "NAPARI_PERFMON": "/Users/pbw/.perfmon",
+    "NAPARI_PERFMON": "/Users/pbw/.perfmon",
     "NAPARI_ASYNC": "~/.async",
 }
 
