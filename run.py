@@ -58,11 +58,40 @@ def create_stack(num_slices, seconds):
     return np.stack(images, axis=0)
 
 
+def create_images(nx, ny, count, seconds):
+    return [
+        add_delay(create_text_array(x, nx, ny), seconds) for x in range(count)
+    ]
+
+
+def create_grid_stack(num_slices):
+    seconds = 0.25
+    cols = 4
+    rows = 4
+    images = []
+    for i in range(rows):
+        for j in range(cols):
+            dx = 1 / (rows + 1)
+            dy = 1 / (cols + 1)
+            x = dx + dx * i
+            y = dy + dy * j
+            images.append(
+                np.stack(create_images(x, y, num_slices, seconds), axis=0)
+            )
+    return np.stack(images, axis=0)
+
+
 def run_napari(usage=False):
     def num():
         images = [create_text_array(x) for x in range(20)]
         data = np.stack(images, axis=0)
         return napari.view_image(data, rgb=True, name='numbered slices')
+
+    def num_16():
+        num_slices = 25
+        data = create_grid_stack(num_slices)
+        names = [f"layer {n}" for n in range(num_slices)]
+        return napari.view_image(data, name=names, channel_axis=0)
 
     def num_delayed():
         data = create_stack(20, 1)
@@ -72,33 +101,8 @@ def run_napari(usage=False):
         data = create_stack(20, 0)
         return napari.view_image(data, name='delayed (1 second)')
 
-    def create_images(nx, ny, count, seconds):
-        return [
-            add_delay(create_text_array(x, nx, ny), seconds)
-            for x in range(count)
-        ]
-
-    def num_16():
-        count = 25
-        seconds = 0.25
-        cols = 4
-        rows = 4
-        images = []
-        for i in range(rows):
-            for j in range(cols):
-                dx = 1 / (rows + 1)
-                dy = 1 / (cols + 1)
-                x = dx + dx * i
-                y = dy + dy * j
-                images.append(
-                    np.stack(create_images(x, y, count, seconds), axis=0)
-                )
-        data = np.stack(images, axis=0)
-        names = [f"layer {n}" for n in range(count)]
-        return napari.view_image(data, name=names, channel_axis=0)
-
     def num_2():
-        data = add_delay(np.array(create_text_array("one")), 1)
+        data = add_delay(create_text_array("one"), 1)
         return napari.view_image(data, name='numbered slices', channel_axis=0)
 
     def async_3d():
@@ -158,6 +162,31 @@ def run_napari(usage=False):
             name='big labels timeseries',
         )
 
+    def multi_rand():
+        shapes = [
+            (167424, 79360),
+            (83712, 39680),
+            (41856, 19840),
+            (20928, 9920),
+            (10464, 4960),
+            (5232, 2480),
+            (2616, 1240),
+            (1308, 620),
+            (654, 310),
+            (327, 155),
+            (163, 77),
+        ]
+        pyramid = [da.random.random(s) for s in shapes]
+        return napari.view_image(pyramid)
+
+    def multi_zarr():
+        path = 'https://s3.embassy.ebi.ac.uk/idr/zarr/v0.1/9822151.zarr'
+        resolutions = [
+            da.from_zarr(path, component=str(i))[0, 0, 0]
+            for i in list(range(11))
+        ]
+        return napari.view_image(resolutions)
+
     REMOTE_SMALL_URL = (
         "https://s3.embassy.ebi.ac.uk/idr/zarr/v0.1/6001240.zarr"
     )
@@ -181,6 +210,8 @@ def run_napari(usage=False):
         "remote-small": REMOTE_SMALL_URL,
         "big": "/data-ext/4495402.zarr",
         "small": "/data-local/6001240.zarr",
+        "multi_zarr": multi_zarr,
+        "multi_rand": multi_rand,
     }
 
     if usage:
@@ -202,11 +233,14 @@ def run_napari(usage=False):
         # Import late so it sees our env vars.
         import napari
 
+        # The DATASET is factory that creates a viewer.
+        viewer_factory = data_set
+
         print(f"Starting napari with: {name}")
 
         # It's a callable function
         with napari.gui_qt():
-            viewer = data_set()
+            viewer = viewer_factory()
             print(viewer._title)
 
 
