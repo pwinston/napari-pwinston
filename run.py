@@ -20,7 +20,7 @@ from text_image import create_text_array
 DATASETS = {}
 
 ENV = {
-    "NAPARI_PERFMON": "/Users/pbw/.perfmon",
+    # "NAPARI_PERFMON": "/Users/pbw/.perfmon",
     "NAPARI_ASYNC": "~/.async",
 }
 
@@ -64,19 +64,21 @@ def create_images(nx, ny, count, seconds):
     ]
 
 
-def create_grid_stack(num_slices):
-    seconds = 0.25
-    cols = 4
-    rows = 4
+def create_grid_stack(num_cols, num_rows, num_slices, seconds=None):
+    if seconds is None:
+        seconds = [0.25] * (num_cols * num_rows)
+    if seconds is float:
+        seconds = [seconds] * (num_cols * num_rows)
     images = []
-    for i in range(rows):
-        for j in range(cols):
-            dx = 1 / (rows + 1)
-            dy = 1 / (cols + 1)
+    for i in range(num_rows):
+        for j in range(num_cols):
+            dx = 1 / (num_rows + 1)
+            dy = 1 / (num_cols + 1)
             x = dx + dx * i
             y = dy + dy * j
+            sleep_time = seconds[num_rows * i + j]
             images.append(
-                np.stack(create_images(x, y, num_slices, seconds), axis=0)
+                np.stack(create_images(x, y, num_slices, sleep_time), axis=0)
             )
     return np.stack(images, axis=0)
 
@@ -89,7 +91,13 @@ def run_napari(usage=False):
 
     def num_16():
         num_slices = 25
-        data = create_grid_stack(num_slices)
+        data = create_grid_stack(4, 4, num_slices)
+        names = [f"layer {n}" for n in range(num_slices)]
+        return napari.view_image(data, name=names, channel_axis=0)
+
+    def num_4():
+        num_slices = 25
+        data = create_grid_stack(2, 2, num_slices, [0, 0, 1, 1])
         names = [f"layer {n}" for n in range(num_slices)]
         return napari.view_image(data, name=names, channel_axis=0)
 
@@ -193,6 +201,7 @@ def run_napari(usage=False):
     DATASETS = {
         "num": num,
         "num_16": num_16,
+        "num_4": num_4,
         "num_2": num_2,
         "num_delayed": num_delayed,
         "num_delayed0": num_delayed0,
