@@ -58,6 +58,16 @@ def create_stack(num_slices, seconds):
     return np.stack(images, axis=0)
 
 
+def create_stack_mixed(num_slices):
+    images = [
+        da.from_delayed(
+            delayed_image(x, 0 if x < 5 else 1), (1024, 1024, 3), dtype=float
+        )
+        for x in range(num_slices)
+    ]
+    return np.stack(images, axis=0)
+
+
 def create_images(nx, ny, count, seconds):
     return [
         add_delay(create_text_array(x, nx, ny), seconds) for x in range(count)
@@ -107,7 +117,11 @@ def run_napari(usage=False):
 
     def num_delayed0():
         data = create_stack(20, 0)
-        return napari.view_image(data, name='delayed (1 second)')
+        return napari.view_image(data, name='zero delay')
+
+    def num_mixed():
+        data = create_stack_mixed(20)
+        return napari.view_image(data, name='zero delay')
 
     def num_2():
         data = add_delay(create_text_array("one"), 1)
@@ -205,6 +219,7 @@ def run_napari(usage=False):
         "num_2": num_2,
         "num_delayed": num_delayed,
         "num_delayed0": num_delayed0,
+        "num_mixed": num_mixed,
         "async_3d": async_3d,
         "async_3d_small": async_3d_small,
         "invisible": invisible,
