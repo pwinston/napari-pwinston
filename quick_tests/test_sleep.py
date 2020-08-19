@@ -1,5 +1,4 @@
 import time
-from time import sleep
 
 for i in range(20):
     start = time.time()
