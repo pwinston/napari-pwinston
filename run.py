@@ -21,7 +21,7 @@ DATASETS = {}
 
 ENV = {
     # "NAPARI_PERFMON": "/Users/pbw/.perfmon",
-    "NAPARI_ASYNC": "~/.async",
+    "NAPARI_ASYNC": "1",  # "~/.async",
 }
 
 
@@ -107,7 +107,13 @@ def run_napari(usage=False):
 
     def num_4():
         num_slices = 25
-        data = create_grid_stack(2, 2, num_slices, [0, 0, 1, 1])
+        data = create_grid_stack(2, 2, num_slices)
+        names = [f"layer {n}" for n in range(num_slices)]
+        return napari.view_image(data, name=names, channel_axis=0)
+
+    def num_1():
+        num_slices = 25
+        data = create_grid_stack(1, 1, num_slices)
         names = [f"layer {n}" for n in range(num_slices)]
         return napari.view_image(data, name=names, channel_axis=0)
 
@@ -217,6 +223,7 @@ def run_napari(usage=False):
         "num_16": num_16,
         "num_4": num_4,
         "num_2": num_2,
+        "num_1": num_1,
         "num_delayed": num_delayed,
         "num_delayed0": num_delayed0,
         "num_mixed": num_mixed,
