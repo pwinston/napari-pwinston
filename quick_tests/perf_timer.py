@@ -1,5 +1,4 @@
 import contextlib
-import time
 from time import perf_counter_ns
 from typing import Optional
 from collections import namedtuple
