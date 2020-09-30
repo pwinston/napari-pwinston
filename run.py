@@ -10,6 +10,7 @@ import os
 import sys
 import time
 
+import click
 import dask
 import dask.array as da
 import numpy as np
@@ -21,7 +22,6 @@ DATASETS = {}
 
 ENV = {
     # "NAPARI_PERFMON": "/Users/pbw/.perfmon",
-    "NAPARI_ASYNC": "1",  # "~/.async",
 }
 
 
@@ -93,7 +93,7 @@ def create_grid_stack(num_cols, num_rows, num_slices, seconds=None):
     return np.stack(images, axis=0)
 
 
-def run_napari(usage=False):
+def run_napari(dataset_name, usage=False):
     def num():
         images = [create_text_array(x) for x in range(20)]
         data = np.stack(images, axis=0)
@@ -249,14 +249,13 @@ def run_napari(usage=False):
         print('\n'.join(DATASETS.keys()))
         return 2
 
-    name = sys.argv[1]
-    data_set = DATASETS[name]
+    data_set = DATASETS[dataset_name]
 
     if isinstance(data_set, str):
         # Import late so it sees our env vars.
         from napari.__main__ import main as napari_main
 
-        print(f"LOADING {name}: {data_set}")
+        print(f"LOADING {dataset_name}: {data_set}")
         sys.argv[1] = data_set
         sys.exit(napari_main())
 
@@ -267,7 +266,7 @@ def run_napari(usage=False):
         # The DATASET is factory that creates a viewer.
         viewer_factory = data_set
 
-        print(f"Starting napari with: {name}")
+        print(f"Starting napari with: {dataset_name}")
 
         # It's a callable function
         with napari.gui_qt():
@@ -275,12 +274,16 @@ def run_napari(usage=False):
             print(viewer._title)
 
 
-if __name__ == "__main__":
-
-    if len(sys.argv) < 2:
-        run_napari(usage=True)
-        sys.exit(1)
-
+@click.command()
+@click.option('--sync', is_flag=True, help='Run synchronously')
+@click.argument('dataset')
+def run(dataset, sync):
     _dump_env()
+    ENV["NAPARI_ASYNC"] = "0" if sync else "1"
+
     os.environ.update(ENV)
-    run_napari()
+    run_napari(dataset)
+
+
+if __name__ == "__main__":
+    run()
