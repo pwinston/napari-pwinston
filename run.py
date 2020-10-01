@@ -278,12 +278,16 @@ def run_napari(dataset_name, usage=False):
 @click.option('--sync', is_flag=True, help='Run synchronously')
 @click.argument('dataset')
 def run(dataset, sync):
-    _dump_env()
-    ENV["NAPARI_ASYNC"] = "0" if sync else "1"
 
+    ENV["NAPARI_ASYNC"] = "0" if sync else "1"
     os.environ.update(ENV)
+    _dump_env()
+
     run_napari(dataset)
 
 
 if __name__ == "__main__":
-    run()
+    if len(sys.argv) == 1:
+        run.main(['--help'])
+    else:
+        run()
