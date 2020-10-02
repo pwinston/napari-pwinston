@@ -17,12 +17,9 @@ import numpy as np
 
 from text_image import create_text_array
 
+PERF_CONFIG_PATH = "/Users/pbw/.perfmon"
 
 DATASETS = {}
-
-ENV = {
-    # "NAPARI_PERFMON": "/Users/pbw/.perfmon",
-}
 
 
 def _dump_env():
@@ -276,11 +273,15 @@ def run_napari(dataset_name, usage=False):
 
 @click.command()
 @click.option('--sync', is_flag=True, help='Run synchronously')
+@click.option('--perf', is_flag=True, help='Enable perfmon')
 @click.argument('dataset')
-def run(dataset, sync):
+def run(dataset, sync, perf):
 
-    ENV["NAPARI_ASYNC"] = "0" if sync else "1"
-    os.environ.update(ENV)
+    env = {
+        "NAPARI_ASYNC": "0" if sync else "1",
+        "NAPARI_PERFMON": PERF_CONFIG_PATH if perf else "0",
+    }
+    os.environ.update(env)
     _dump_env()
 
     run_napari(dataset)
