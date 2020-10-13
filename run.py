@@ -278,7 +278,7 @@ def run_napari(dataset_name, usage=False):
 def run(dataset, sync, perf):
 
     env = {
-        "NAPARI_ASYNC": "0" if sync else "1",
+        "NAPARI_ASYNC": "0" if sync else "~/.async",
         "NAPARI_PERFMON": PERF_CONFIG_PATH if perf else "0",
     }
     os.environ.update(env)
