@@ -29,6 +29,7 @@ def create_text_array(text, nx=0.5, ny=0.5) -> np.ndarray:
 def test():
     image = create_text_array("Hello")
     tree = Octree.from_image(image)
+    tree.print_info()
 
 
 if __name__ == "__main__":
