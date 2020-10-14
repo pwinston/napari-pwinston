@@ -1,7 +1,6 @@
+"""create_text_image: create a PIL image with centered text.
+"""
 import numpy as np
-from napari import QtCore
-from napari.layers.image.experimental.octree import Octree
-
 from PIL import Image, ImageDraw, ImageFont
 
 
@@ -19,7 +18,7 @@ def draw_text(image, text, nx=0.5, ny=0.5):
     draw.rectangle([0, 0, image.width, image.height], width=5)
 
 
-def create_text_array(text, nx=0.5, ny=0.5) -> np.ndarray:
+def create_text_array(text, nx=0.5, ny=0.5):
     text = str(text)
     SIZE = (1024, 1024)
     image = Image.new('RGB', SIZE)
@@ -28,9 +27,11 @@ def create_text_array(text, nx=0.5, ny=0.5) -> np.ndarray:
 
 
 def test():
-    image = create_text_array("Hello")
-    tree = Octree.from_image(image)
+    image = create_text_image("test")
+    outfile = "image.png"
+    image.save(outfile)
+    print(f"Wrote: {outfile}")
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     test()
