@@ -1,5 +1,4 @@
 import numpy as np
-from napari import QtCore
 from napari.layers.image.experimental.octree import Octree
 
 from PIL import Image, ImageDraw, ImageFont
