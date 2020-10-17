@@ -66,6 +66,8 @@ def create_stack_mixed(num_slices):
 
 
 def create_images(nx, ny, count, seconds):
+    if seconds == 0:
+        return [create_text_array(x, nx, ny) for x in range(count)]
     return [
         add_delay(create_text_array(x, nx, ny), seconds) for x in range(count)
     ]
@@ -74,7 +76,9 @@ def create_images(nx, ny, count, seconds):
 def create_grid_stack(num_cols, num_rows, num_slices, seconds=None):
     if seconds is None:
         seconds = [0.25] * (num_cols * num_rows)
-    if seconds is float:
+    if isinstance(seconds, int):
+        seconds = float(seconds)
+    if isinstance(seconds, float):
         seconds = [seconds] * (num_cols * num_rows)
     images = []
     for i in range(num_rows):
@@ -96,9 +100,20 @@ def run_napari(dataset_name, usage=False):
         data = np.stack(images, axis=0)
         return napari.view_image(data, rgb=True, name='numbered slices')
 
+    def num_tiny():
+        images = [create_text_array(x, size=(16, 16)) for x in range(20)]
+        data = np.stack(images, axis=0)
+        return napari.view_image(data, rgb=True, name='numbered slices')
+
     def num_16():
         num_slices = 25
         data = create_grid_stack(4, 4, num_slices)
+        names = [f"layer {n}" for n in range(num_slices)]
+        return napari.view_image(data, name=names, channel_axis=0)
+
+    def num_16_0():
+        num_slices = 25
+        data = create_grid_stack(4, 4, num_slices, 0)
         names = [f"layer {n}" for n in range(num_slices)]
         return napari.view_image(data, name=names, channel_axis=0)
 
@@ -217,7 +232,9 @@ def run_napari(dataset_name, usage=False):
     )
     DATASETS = {
         "num": num,
+        "num_tiny": num_tiny,
         "num_16": num_16,
+        "num_16_0": num_16_0,
         "num_4": num_4,
         "num_2": num_2,
         "num_1": num_1,
