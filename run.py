@@ -15,7 +15,7 @@ import dask
 import dask.array as da
 import numpy as np
 
-from text_image import create_text_array
+from text_image import create_text_array, create_tiled_text_array
 
 PERF_CONFIG_PATH = "/Users/pbw/.perfmon"
 
@@ -97,6 +97,11 @@ def create_grid_stack(num_cols, num_rows, num_slices, seconds=None):
 def run_napari(dataset_name, usage=False):
     def num():
         images = [create_text_array(x) for x in range(20)]
+        data = np.stack(images, axis=0)
+        return napari.view_image(data, rgb=True, name='numbered slices')
+
+    def num_tiled():
+        images = [create_tiled_text_array(x, 4, 4) for x in range(20)]
         data = np.stack(images, axis=0)
         return napari.view_image(data, rgb=True, name='numbered slices')
 
@@ -232,6 +237,7 @@ def run_napari(dataset_name, usage=False):
     )
     DATASETS = {
         "num": num,
+        "num_tiled": num_tiled,
         "num_tiny": num_tiny,
         "num_16": num_16,
         "num_16_0": num_16_0,

@@ -18,6 +18,24 @@ def draw_text(image, text, nx=0.5, ny=0.5):
     draw.rectangle([0, 0, image.width, image.height], width=5)
 
 
+def draw_text_tiled(image, text, nrows=1, ncols=1):
+
+    font = ImageFont.truetype('Arial Black.ttf', size=74)
+    (text_width, text_height) = font.getsize(text)
+
+    color = 'rgb(255, 255, 255)'  # white
+    draw = ImageDraw.Draw(image)
+
+    for row in range(nrows + 1):
+        for col in range(ncols + 1):
+            x = (col / ncols) * image.width - text_width / 2
+            y = (row / nrows) * image.height - text_height / 2
+            print(x, y)
+
+            draw.text((x, y), text, fill=color, font=font)
+    draw.rectangle([0, 0, image.width, image.height], width=5)
+
+
 def create_text_array(text, nx=0.5, ny=0.5, size=(1024, 1024)):
     text = str(text)
     image = Image.new('RGB', size)
@@ -25,8 +43,16 @@ def create_text_array(text, nx=0.5, ny=0.5, size=(1024, 1024)):
     return np.array(image)
 
 
+def create_tiled_text_array(text, nrows, ncols, size=(1024, 1024)):
+    text = str(text)
+    image = Image.new('RGB', size)
+    draw_text_tiled(image, text, nrows, ncols)
+    return np.array(image)
+
+
 def test():
-    image = create_text_image("test")
+    image = Image.new('RGB', (1024, 1024))
+    draw_text_tiled(image, "1", 10, 10)
     outfile = "image.png"
     image.save(outfile)
     print(f"Wrote: {outfile}")
