@@ -20,6 +20,8 @@ def draw_text(image, text, nx=0.5, ny=0.5):
 
 def draw_text_tiled(image, text, nrows=1, ncols=1):
 
+    print(f"Creating {nrows}x{ncols} text image: {text}")
+
     font = ImageFont.truetype('Arial Black.ttf', size=74)
     (text_width, text_height) = font.getsize(text)
 
@@ -30,7 +32,6 @@ def draw_text_tiled(image, text, nrows=1, ncols=1):
         for col in range(ncols + 1):
             x = (col / ncols) * image.width - text_width / 2
             y = (row / nrows) * image.height - text_height / 2
-            print(x, y)
 
             draw.text((x, y), text, fill=color, font=font)
     draw.rectangle([0, 0, image.width, image.height], width=5)

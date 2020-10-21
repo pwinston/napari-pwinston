@@ -101,7 +101,7 @@ def run_napari(dataset_name, usage=False):
         return napari.view_image(data, rgb=True, name='numbered slices')
 
     def num_tiled():
-        images = [create_tiled_text_array(x, 4, 4) for x in range(20)]
+        images = [create_tiled_text_array(x, 16, 16) for x in range(20)]
         data = np.stack(images, axis=0)
         return napari.view_image(data, rgb=True, name='numbered slices')
 
@@ -253,14 +253,14 @@ def run_napari(dataset_name, usage=False):
         "noise": noise,
         "big8": big8,
         "big16": big16,
-        "big2d": big2d,
+        "big2pd": big2d,
         "big3d": big3d,
         "small3d": small3d,
         "labels": labels,
         "remote": "https://s3.embassy.ebi.ac.uk/idr/zarr/v0.1/4495402.zarr",
         "remote-small": REMOTE_SMALL_URL,
         "big": "/data-ext/4495402.zarr",
-        "small": "/data-local/6001240.zarr",
+        "small": "/Users/pbw/data/6001240.zarr",
         "multi_zarr": multi_zarr,
         "multi_rand": multi_rand,
     }
