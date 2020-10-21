@@ -44,7 +44,7 @@ def create_text_array(text, nx=0.5, ny=0.5, size=(1024, 1024)):
     return np.array(image)
 
 
-def create_tiled_text_array(text, nrows, ncols, size=(1024, 1024)):
+def create_tiled_text_array(text, nrows, ncols, size=(1000, 1000)):
     text = str(text)
     image = Image.new('RGB', size)
     draw_text_tiled(image, text, nrows, ncols)
