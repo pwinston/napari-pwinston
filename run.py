@@ -15,7 +15,11 @@ import dask
 import dask.array as da
 import numpy as np
 
-from text_image import create_text_array, create_tiled_text_array
+from text_image import (
+    create_text_array,
+    create_tiled_text_array,
+    create_tiled_test_1,
+)
 
 PERF_CONFIG_PATH = "/Users/pbw/.perfmon"
 
@@ -101,7 +105,14 @@ def run_napari(dataset_name, usage=False):
         return napari.view_image(data, rgb=True, name='numbered slices')
 
     def num_tiled():
-        images = [create_tiled_text_array(x, 16, 16) for x in range(20)]
+        size = (1000, 1030)
+        images = [create_tiled_text_array(x, 16, 16, size) for x in range(5)]
+        data = np.stack(images, axis=0)
+        return napari.view_image(data, rgb=True, name='numbered slices')
+
+    def num_tiled_1():
+        size = (1024, 1024)
+        images = [create_tiled_test_1(x, 16, 1, size) for x in range(5)]
         data = np.stack(images, axis=0)
         return napari.view_image(data, rgb=True, name='numbered slices')
 
@@ -297,11 +308,14 @@ def run_napari(dataset_name, usage=False):
 @click.command()
 @click.option('--sync', is_flag=True, help='Run synchronously')
 @click.option('--perf', is_flag=True, help='Enable perfmon')
+@click.option('--octree', is_flag=True, help='Enable octree')
 @click.argument('dataset')
-def run(dataset, sync, perf):
+def run(dataset, sync, perf, octree):
 
     env = {
-        "NAPARI_ASYNC": "0" if sync else "~/.async",
+        # "NAPARI_ASYNC": "0" if sync else "~/.async",
+        "NAPARI_ASYNC": "0" if sync else "1",
+        "NAPARI_OCTREE": "1" if octree else "0",
         "NAPARI_PERFMON": PERF_CONFIG_PATH if perf else "0",
     }
     os.environ.update(env)
