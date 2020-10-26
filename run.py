@@ -2,9 +2,9 @@
 """
 Launch napari with various datasets for development/testing/debug.
 
-USAGE: nap.py <dataset>
+USAGE: run.py <dataset>
 
-Example: nap.py small
+Example: run.py small
 """
 import os
 import sys
@@ -243,6 +243,11 @@ def run_napari(dataset_name, usage=False):
         ]
         return napari.view_image(resolutions)
 
+    def astronaut():
+        from skimage import data
+
+        return napari.view_image(data.astronaut(), rgb=True)
+
     REMOTE_SMALL_URL = (
         "https://s3.embassy.ebi.ac.uk/idr/zarr/v0.1/6001240.zarr"
     )
@@ -274,42 +279,53 @@ def run_napari(dataset_name, usage=False):
         "small": "/Users/pbw/data/6001240.zarr",
         "multi_zarr": multi_zarr,
         "multi_rand": multi_rand,
+        "astronaut": astronaut,
     }
 
     if usage:
         print('\n'.join(DATASETS.keys()))
         return 2
 
-    data_set = DATASETS[dataset_name]
-
-    if isinstance(data_set, str):
-        # Import late so it sees our env vars.
+    if dataset_name is None:
+        import napari
         from napari.__main__ import main as napari_main
 
-        print(f"LOADING {dataset_name}: {data_set}")
-        sys.argv[1] = data_set
-        sys.exit(napari_main())
+        sys.argv[:] = sys.argv[:1]
 
-    else:
-        # Import late so it sees our env vars.
-        import napari
-
-        # The DATASET is factory that creates a viewer.
-        viewer_factory = data_set
-
-        print(f"Starting napari with: {dataset_name}")
-
-        # It's a callable function
         with napari.gui_qt():
-            viewer = viewer_factory()
-            print(viewer._title)
+            napari_main()
+    else:
+        data_set = DATASETS[dataset_name]
+
+        if isinstance(data_set, str):
+            # Import late so it sees our env vars.
+            from napari.__main__ import main as napari_main
+
+            print(f"LOADING {dataset_name}: {data_set}")
+
+            sys.argv[1] = data_set
+            sys.exit(napari_main())
+
+        else:
+            # Import late so it sees our env vars.
+            import napari
+
+            # The DATASET is factory that creates a viewer.
+            viewer_factory = data_set
+
+            print(f"Starting napari with: {dataset_name}")
+
+            # It's a callable function
+            with napari.gui_qt():
+                viewer = viewer_factory()
+                print(viewer._title)
 
 
 @click.command()
 @click.option('--sync', is_flag=True, help='Run synchronously')
 @click.option('--perf', is_flag=True, help='Enable perfmon')
 @click.option('--octree', is_flag=True, help='Enable octree')
-@click.argument('dataset')
+@click.argument('dataset', required=False)
 def run(dataset, sync, perf, octree):
 
     env = {
@@ -325,7 +341,4 @@ def run(dataset, sync, perf, octree):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) == 1:
-        run.main(['--help'])
-    else:
-        run()
+    run()
