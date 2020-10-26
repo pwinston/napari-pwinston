@@ -288,12 +288,12 @@ def run_napari(dataset_name, usage=False):
 
     if dataset_name is None:
         import napari
-        from napari.__main__ import main as napari_main
+        from napari.__main__ import _run
 
-        sys.argv[:] = sys.argv[:1]
+        sys.argv = sys.argv[:1]
 
         with napari.gui_qt():
-            napari_main()
+            _run()
     else:
         data_set = DATASETS[dataset_name]
 
@@ -333,6 +333,7 @@ def run(dataset, sync, perf, octree):
         "NAPARI_ASYNC": "0" if sync else "1",
         "NAPARI_OCTREE": "1" if octree else "0",
         "NAPARI_PERFMON": PERF_CONFIG_PATH if perf else "0",
+        "NAPARI_CATCH_ERRORS": "0",
     }
     os.environ.update(env)
     _dump_env()
