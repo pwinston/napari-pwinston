@@ -13,6 +13,9 @@ PATHS = [
     "napari/layers/image/experimental/*.py",
     "napari/_qt/experimental/*.py",
     "napari/_qt/experimental/render/*.py",
+    "napari/components/experimental/chunk/*.py",
+    "napari/components/experimental/*.py",
+    "napari/components/experimental/_commands/*.py",
 ]
 
 
@@ -20,7 +23,14 @@ PATHS = [
 
 
 def _run_pylint(paths):
+
+    print(f"Checking {len(paths)} files:")
+    for path in paths:
+        print(f"Checking {path}")
+
+    # Pylint wants string not Path objects.
     str_paths = [str(path) for path in paths]
+
     Run(str_paths, do_exit=False)
 
 

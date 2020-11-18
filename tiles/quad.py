@@ -8,7 +8,7 @@ _QUAD = np.array(
 
 
 # TODO_OCTREE: this class is placeholder, needs work
-class ChunkData:
+class OctreeChunk:
     """One chunk of the full image.
 
     A chunk is a 2D tile or a 3D sub-volume.
@@ -43,14 +43,14 @@ class ChunkData:
         return (self.pos[0], self.pos[1], self.level_index)
 
 
-def _quad(chunk_data: ChunkData):
-    shape = chunk_data.data.shape
+def _quad(octree_chunk: OctreeChunk):
+    shape = octree_chunk.data.shape
 
-    scale = np.array(chunk_data.scale, dtype=np.float32)
+    scale = np.array(octree_chunk.scale, dtype=np.float32)
 
     quad = _QUAD.copy()
     quad[:, :2] *= shape * scale
-    quad[:, :2] += chunk_data.pos
+    quad[:, :2] += octree_chunk.pos
 
     return quad
 
@@ -59,9 +59,9 @@ def main():
     data = np.zeros((500, 100))
     pos = (50, 10)
     scale = (5, 2)
-    chunk_data = ChunkData(0, data, pos, scale)
+    octree_chunk = OctreeChunk(0, data, pos, scale)
 
-    quad = _quad(chunk_data)
+    quad = _quad(octree_chunk)
     print(quad)
 
 

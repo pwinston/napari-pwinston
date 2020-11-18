@@ -99,6 +99,9 @@ def create_grid_stack(num_cols, num_rows, num_slices, seconds=None):
 
 
 def run_napari(dataset_name, usage=False):
+    def none():
+        return napari.Viewer()
+
     def num():
         images = [create_text_array(x) for x in range(20)]
         data = np.stack(images, axis=0)
@@ -252,6 +255,7 @@ def run_napari(dataset_name, usage=False):
         "https://s3.embassy.ebi.ac.uk/idr/zarr/v0.1/6001240.zarr"
     )
     DATASETS = {
+        "none": none,
         "num": num,
         "num_tiled": num_tiled,
         "num_tiny": num_tiny,
@@ -329,8 +333,9 @@ def run_napari(dataset_name, usage=False):
 def run(dataset, sync, perf, octree):
 
     env = {
-        # "NAPARI_ASYNC": "0" if sync else "~/.async",
-        "NAPARI_ASYNC": "0" if sync else "1",
+        # TODO: Fix this, accept async config file path on command line!
+        "NAPARI_ASYNC": "0" if sync else "~/.async",
+        # "NAPARI_ASYNC": "0" if sync else "1",
         "NAPARI_OCTREE": "1" if octree else "0",
         "NAPARI_PERFMON": PERF_CONFIG_PATH if perf else "0",
         "NAPARI_CATCH_ERRORS": "0",
