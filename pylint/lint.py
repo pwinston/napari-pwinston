@@ -16,7 +16,7 @@ PATHS = [
     "napari/components/experimental/chunk/*.py",
     "napari/components/experimental/*.py",
     "napari/components/experimental/_commands/*.py",
-    "napari/components/experimental/shared_mem/*.py",
+    "napari/components/experimental/monitor/*.py",
 ]
 
 
