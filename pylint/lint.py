@@ -53,7 +53,7 @@ def lint(match_string):
 
         if paths:
             print(f"====== LINTING: {dir_path}/{pattern}")
-            _run_pylint(paths)
+            _run_pylint(list(paths))
 
 
 if __name__ == '__main__':
