@@ -329,8 +329,9 @@ def run_napari(dataset_name, usage=False):
 @click.option('--sync', is_flag=True, help='Run synchronously')
 @click.option('--perf', is_flag=True, help='Enable perfmon')
 @click.option('--octree', is_flag=True, help='Enable octree')
+@click.option('--mon', is_flag=True, help='Enable monitor')
 @click.argument('dataset', required=False)
-def run(dataset, sync, perf, octree):
+def run(dataset, sync, perf, octree, mon):
 
     env = {
         # TODO: Fix this, accept async config file path on command line!
@@ -339,6 +340,7 @@ def run(dataset, sync, perf, octree):
         "NAPARI_OCTREE": "1" if octree else "0",
         "NAPARI_PERFMON": PERF_CONFIG_PATH if perf else "0",
         "NAPARI_CATCH_ERRORS": "0",
+        "NAPARI_MON": "~/.mon-config" if mon else "0",
     }
     os.environ.update(env)
     _dump_env()
