@@ -6,18 +6,20 @@ import click
 from pylint.lint import Run
 from pathlib import Path
 
-ROOT = Path("/Users/pbw/dev/napari")
-
-PATHS = [
-    "napari/_vispy/experimental/*.py",
-    "napari/layers/image/experimental/*.py",
-    "napari/_qt/experimental/*.py",
-    "napari/_qt/experimental/render/*.py",
-    "napari/components/experimental/chunk/*.py",
-    "napari/components/experimental/*.py",
-    "napari/components/experimental/_commands/*.py",
-    "napari/components/experimental/monitor/*.py",
-]
+PATHS = {
+    "/Users/pbw/dev/napari": [
+        "napari/_vispy/experimental/*.py",
+        "napari/layers/image/experimental/*.py",
+        "napari/_qt/experimental/*.py",
+        "napari/_qt/experimental/render/*.py",
+        "napari/components/experimental/chunk/*.py",
+        "napari/components/experimental/*.py",
+        "napari/components/experimental/_commands/*.py",
+        "napari/components/experimental/monitor/*.py",
+        "napari/components/experimental/monitor/*.py",
+    ],
+    "/Users/pbw/dev/webmon": ["*.py"],
+}
 
 
 # Run(['--errors-only', 'myfile.py'])
@@ -35,25 +37,27 @@ def _run_pylint(paths):
     Run(str_paths, do_exit=False)
 
 
-def _split_path_pattern(path):
+def _split_path_pattern(root, path):
     directory, pattern = path.split('*')
-    return ROOT / directory, '*' + pattern
+    return root / directory, '*' + pattern
 
 
 @click.command()
 @click.argument('match_string', required=False)
 def lint(match_string):
-    for spec in PATHS:
-        dir_path, pattern = _split_path_pattern(spec)
+    for root, paths in PATHS.items():
+        root = Path(root)
+        for spec in paths:
+            dir_path, pattern = _split_path_pattern(root, spec)
 
-        paths = Path(dir_path).glob(pattern)
+            paths = Path(dir_path).glob(pattern)
 
-        if match_string is not None:
-            paths = [path for path in paths if match_string in str(path)]
+            if match_string is not None:
+                paths = [path for path in paths if match_string in str(path)]
 
-        if paths:
-            print(f"====== LINTING: {dir_path}/{pattern}")
-            _run_pylint(list(paths))
+            if paths:
+                print(f"====== LINTING: {dir_path}/{pattern}")
+                _run_pylint(list(paths))
 
 
 if __name__ == '__main__':
