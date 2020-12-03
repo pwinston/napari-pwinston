@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """lint.py
 """
+from pathlib import Path
+
 import click
 
 from pylint.lint import Run
-from pathlib import Path
 
 PATHS = {
     "/Users/pbw/dev/napari": [
@@ -16,9 +17,8 @@ PATHS = {
         "napari/components/experimental/*.py",
         "napari/components/experimental/_commands/*.py",
         "napari/components/experimental/monitor/*.py",
-        "napari/components/experimental/monitor/*.py",
     ],
-    "/Users/pbw/dev/webmon": ["*.py"],
+    "/Users/pbw/dev/webmon": ["*.py", "lib/*.py"],
 }
 
 
