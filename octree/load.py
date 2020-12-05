@@ -16,11 +16,15 @@ def get_pyramid(path: str) -> List[da.Array]:
     return [da.from_zarr(f"{str(path)}/{level}").rechunk() for level in levels]
 
 
-pyramid = get_pyramid("image.zarr")
+def main():
+    pyramid = get_pyramid("image.zarr")
 
-with napari.gui_qt():
-    viewer = napari.Viewer()
-    viewer.add_image(
-        pyramid
-    )  # [0])  # add this in to load only the base layer
+    with napari.gui_qt():
+        viewer = napari.Viewer()
+        viewer.add_image(
+            pyramid
+        )  # [0])  # add this in to load only the base layer
 
+
+if __name__ == "__main__":
+    main()
