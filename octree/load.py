@@ -1,4 +1,5 @@
 import os
+import sys
 from typing import List
 
 import dask.array as da
@@ -17,7 +18,8 @@ def get_pyramid(path: str) -> List[da.Array]:
 
 
 def main():
-    pyramid = get_pyramid("image.zarr")
+    path = sys.argv[1]
+    pyramid = get_pyramid(path)
 
     with napari.gui_qt():
         viewer = napari.Viewer()
