@@ -4,6 +4,7 @@ from typing import List
 
 import dask.array as da
 import napari
+import numpy as np
 
 
 def get_pyramid(path: str) -> List[da.Array]:
@@ -17,9 +18,9 @@ def get_pyramid(path: str) -> List[da.Array]:
     return [da.from_zarr(f"{str(path)}/{level}").rechunk() for level in levels]
 
 
-def main():
-    path = sys.argv[1]
+def main(path: str) -> None:
     pyramid = get_pyramid(path)
+    print(pyramid[0][0, 0, 0])
 
     with napari.gui_qt():
         viewer = napari.Viewer()
@@ -29,4 +30,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv[1])
