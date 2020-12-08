@@ -1,9 +1,24 @@
+import math
 import sys
 
 import numpy as np
 import skimage.data as data
 import zarr
+from skimage.color import rgb2gray
 from skimage.transform import pyramid_gaussian
+
+
+def _dump_pyramid(pyramid):
+    last_size = None
+    for level in pyramid:
+        if last_size is not None:
+            downscale = math.sqrt(last_size / level.size)
+            print(
+                f"size={level.size} shape={level.shape} downscale={downscale}"
+            )
+        else:
+            print(f"size={level.size} shape={level.shape}")
+        last_size = level.size
 
 
 def create_zarr(path: str, image: np.ndarray, chunk_size: int = 512) -> None:
@@ -12,10 +27,8 @@ def create_zarr(path: str, image: np.ndarray, chunk_size: int = 512) -> None:
         image, downscale=2, max_layer=4, multichannel=True
     )
 
-    # levels = list(pyramid)
-    # for index, level in enumerate(levels):
-    #    level = level.astype(np.uint8)
-    #    print(f"index: {index} -> {level.shape} -> {level.dtype}")
+    # Printer here seems to break writing the zarr file!?
+    # _dump_pyramid(pyramid)
 
     store = zarr.DirectoryStore(path)
     with zarr.group(store, overwrite=True) as group:
@@ -39,7 +52,20 @@ def create_zarr(path: str, image: np.ndarray, chunk_size: int = 512) -> None:
 
 
 def main(path: str) -> None:
-    image = np.tile(data.astronaut(), reps=(10, 10, 1))
+    color = data.astronaut()
+    gray = rgb2gray(color)
+
+    print(f"color.shape = {color.shape} dtype={color.dtype}")
+    print(f"gray.shape = {gray.shape} dtype={color.dtype}")
+
+    # Make it RGB but with grayscale colors. RGB is more demanding on
+    # performance (bigger) but the color astronaut makes it hard to see the
+    # red tile boundaries.
+    color[:, :, 0] = gray[:] * 255
+    color[:, :, 1] = gray[:] * 255
+    color[:, :, 2] = gray[:] * 255
+
+    image = np.tile(color, reps=(10, 10, 1))
     print("Input shape: ", image.shape)
     print("Input dtype: ", image.dtype)
     create_zarr(path, image)
