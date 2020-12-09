@@ -17,8 +17,8 @@ import numpy as np
 
 from text_image import (
     create_text_array,
-    create_tiled_text_array,
     create_tiled_test_1,
+    create_tiled_text_array,
 )
 
 PERF_CONFIG_PATH = "/Users/pbw/.perfmon"
@@ -335,9 +335,8 @@ def run(dataset, sync, perf, octree, mon):
 
     env = {
         # TODO: Fix this, accept async config file path on command line!
-        "NAPARI_ASYNC": "0" if sync else "~/.async",
-        # "NAPARI_ASYNC": "0" if sync else "1",
-        "NAPARI_OCTREE": "1" if octree else "0",
+        "NAPARI_ASYNC": "0" if sync else "1",
+        "NAPARI_OCTREE": "~/." if octree else "0",
         "NAPARI_PERFMON": PERF_CONFIG_PATH if perf else "0",
         "NAPARI_CATCH_ERRORS": "0",
         "NAPARI_MON": "~/.mon-config" if mon else "0",

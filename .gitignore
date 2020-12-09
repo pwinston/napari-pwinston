@@ -1,2 +1,3 @@
 *.pyc
 *.zarr
+.DS_store
