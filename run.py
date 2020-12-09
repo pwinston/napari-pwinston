@@ -336,7 +336,7 @@ def run(dataset, sync, perf, octree, mon):
     env = {
         # TODO: Fix this, accept async config file path on command line!
         "NAPARI_ASYNC": "0" if sync else "1",
-        "NAPARI_OCTREE": "~/." if octree else "0",
+        "NAPARI_OCTREE": "~/.octree" if octree else "0",
         "NAPARI_PERFMON": PERF_CONFIG_PATH if perf else "0",
         "NAPARI_CATCH_ERRORS": "0",
         "NAPARI_MON": "~/.mon-config" if mon else "0",
