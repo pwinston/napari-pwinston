@@ -17,6 +17,7 @@ PATHS = {
         "napari/components/experimental/*.py",
         "napari/components/experimental/_commands/*.py",
         "napari/components/experimental/monitor/*.py",
+        "napari/components/experimental/remote/*.py",
     ],
     "/Users/pbw/dev/webmon": ["*.py", "lib/*.py"],
 }
