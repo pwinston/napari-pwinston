@@ -7,6 +7,8 @@ import zarr
 from skimage.color import rgb2gray
 from skimage.transform import pyramid_gaussian
 
+UINT8 = False
+
 
 def _dump_pyramid(pyramid):
     last_size = None
@@ -34,7 +36,8 @@ def create_zarr(path: str, image: np.ndarray, chunk_size: int = 512) -> None:
     with zarr.group(store, overwrite=True) as group:
         series = []
         for i, layer in enumerate(pyramid):
-            layer = (255 * layer).astype(np.uint8)
+            if UINT8:
+                layer = (255 * layer).astype(np.uint8)
             max_val = np.amax(layer)
             print(
                 f"Layer {i} -> {layer.shape} -> {layer.dtype} -> max {max_val}"
