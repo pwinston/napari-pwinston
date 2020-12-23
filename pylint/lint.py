@@ -11,8 +11,10 @@ PATHS = {
     "/Users/pbw/dev/napari": [
         "napari/_vispy/experimental/*.py",
         "napari/layers/image/experimental/*.py",
+        "napari/layers/image/experimental/_tests/*.py",
         "napari/components/experimental/*.py",
         "napari/components/experimental/chunk/*.py",
+        "napari/components/experimental/chunk/_tests/*.py",
         "napari/components/experimental/chunk/_commands/*.py",
         "napari/components/experimental/monitor/*.py",
         "napari/components/experimental/remote/*.py",
